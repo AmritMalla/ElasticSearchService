@@ -1,0 +1,115 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.18'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco'
+}
+
+group = 'com.example'
+version = '1.0.0-SNAPSHOT'
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot core dependencies
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Elasticsearch dependencies
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'co.elastic.clients:elasticsearch-java:8.11.1'
+	implementation 'org.json:json:20231013'
+
+
+	// Lombok for boilerplate reduction
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Jackson for JSON processing
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	// Logging
+	implementation 'org.slf4j:slf4j-api'
+	implementation 'ch.qos.logback:logback-classic'
+
+	// Testing dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+	testImplementation 'org.testcontainers:elasticsearch:1.19.3'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport // Generate test coverage report after tests
+
+	// Separate integration tests from unit tests
+	systemProperty 'spring.profiles.active', 'test'
+
+	filter {
+		// Exclude integration tests from regular test run
+		excludeTestsMatching "*IntegrationTest"
+	}
+}
+
+
+// Configure JaCoCo test report
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true // Required by SonarQube
+		html.required = true
+	}
+}
+
+// Configure JaCoCo test coverage verification
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.9 // 90% coverage required
+			}
+		}
+	}
+}
+
+// Include test coverage in our build process
+check.dependsOn jacocoTestCoverageVerification
+
+// Create a task for building an executable JAR with dependencies
+bootJar {
+	archiveBaseName = 'elasticsearchservice'
+	archiveVersion = project.version
+}
+
+
+// Spring Boot DevTools for development
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+dependencies {
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}

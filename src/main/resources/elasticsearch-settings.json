@@ -1,0 +1,27 @@
+{
+  "index": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1,
+    "refresh_interval": "1s"
+  },
+  "analysis": {
+    "analyzer": {
+      "custom_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "stop",
+          "snowball"
+        ]
+      }
+    },
+    "filter": {
+      "snowball": {
+        "type": "snowball",
+        "language": "English"
+      }
+    }
+  }
+}
