@@ -8,14 +8,31 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the SearchableDocument class.
+ *
+ * These tests verify the creation and functionality of the SearchableDocument model,
+ * ensuring proper instantiation and the correctness of its getter and setter methods.
+ */
 class SearchableDocumentTest {
 
+    /**
+     * Tests the creation of a SearchableDocument instance.
+     *
+     * Expected behavior: should successfully create a non-null SearchableDocument object.
+     */
     @Test
     void testSearchableDocumentCreation() {
         SearchableDocument document = new SearchableDocument();
         assertNotNull(document, "Document should be created");
     }
 
+    /**
+     * Tests the getter and setter methods of the SearchableDocument class.
+     *
+     * Expected behavior: should correctly set and retrieve values for all fields, including ID,
+     * title, content, author, dates, category, tags, and metadata.
+     */
     @Test
     void testSearchableDocumentGettersAndSetters() {
         // Create a document

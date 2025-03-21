@@ -9,8 +9,20 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the SearchResponse class.
+ *
+ * These tests verify the behavior of the SearchResponse model, ensuring proper creation
+ * with all fields and correct calculation of pagination-related properties.
+ */
 class SearchResponseTest {
 
+    /**
+     * Tests the creation and initialization of a SearchResponse object.
+     *
+     * Expected behavior: should correctly set items, total hits, page, size, aggregations,
+     * and took fields with the provided values.
+     */
     @Test
     void testSearchResponseCreation() {
         // Create test data
@@ -35,6 +47,13 @@ class SearchResponseTest {
         assertEquals(took, response.getTook(), "Took should match");
     }
 
+    /**
+     * Tests the pagination calculations in the SearchResponse class.
+     *
+     * Expected behavior: should accurately calculate total pages and determine if there is a next page
+     * across various scenarios including single page, multiple pages, last page, middle page,
+     * and zero size cases.
+     */
     @Test
     void testPaginationCalculation() {
         // Case 1: Exactly one page of results

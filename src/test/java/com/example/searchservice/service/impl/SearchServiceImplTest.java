@@ -4,10 +4,7 @@ import com.example.searchservice.exception.ElasticsearchQueryException;
 import com.example.searchservice.model.SearchRequest;
 import com.example.searchservice.model.SearchResponse;
 import com.example.searchservice.model.SearchableDocument;
-import org.elasticsearch.client.IndicesClient;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.GetIndexRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,14 +17,18 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the SearchServiceImpl class.
+ *
+ * These tests verify the behavior of the search and health check functionalities,
+ * ensuring proper handling of search requests, exception scenarios, and Elasticsearch connectivity.
+ */
 class SearchServiceImplTest {
 
     @Mock
@@ -44,12 +45,22 @@ class SearchServiceImplTest {
 
     private final String indexName = "test_index";
 
+    /**
+     * Sets up the test environment before each test case.
+     *
+     * Initializes Mockito annotations and sets the index name field in the SearchServiceImpl instance.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         ReflectionTestUtils.setField(searchService, "indexName", indexName);
     }
 
+    /**
+     * Tests the search functionality with a valid search request.
+     *
+     * Expected behavior: should return a SearchResponse containing the search results with correct total hits and items.
+     */
     @Test
     void testSearch() {
         // Create a new instance to avoid running the real search logic
@@ -90,6 +101,11 @@ class SearchServiceImplTest {
         verify(elasticsearchOperations).search(any(CriteriaQuery.class), eq(SearchableDocument.class), any(IndexCoordinates.class));
     }
 
+    /**
+     * Tests the search functionality when an exception occurs during the search operation.
+     *
+     * Expected behavior: should throw an ElasticsearchQueryException when the underlying search fails.
+     */
     @Test
     void testSearchThrowsException() {
         // Arrange
@@ -102,6 +118,11 @@ class SearchServiceImplTest {
         assertThrows(ElasticsearchQueryException.class, () -> searchService.search(searchRequest));
     }
 
+    /**
+     * Tests the health check functionality of the search service.
+     *
+     * Expected behavior: should return a status message starting with "OK:" when the index exists and connection is successful.
+     */
     @Test
     void testCheckHealth() {
         // Override the real method to avoid using IndicesClient
@@ -113,7 +134,5 @@ class SearchServiceImplTest {
 
         String result = searchServiceSpy.checkHealth();
         assertTrue(result.startsWith("OK:"));
-
     }
-
 }

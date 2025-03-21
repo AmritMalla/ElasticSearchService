@@ -51,15 +51,15 @@ public class SearchResponse<T> {
     /**
      * Constructor for creating a search response with results and metadata.
      *
-     * @param items List of search result items
-     * @param totalHits Total number of matching results
-     * @param page Current page number
-     * @param size Number of results per page
+     * @param items        List of search result items
+     * @param totalHits    Total number of matching results
+     * @param page         Current page number
+     * @param size         Number of results per page
      * @param aggregations Map of aggregation results
-     * @param took Time taken to execute the search
+     * @param took         Time taken to execute the search
      */
-    public SearchResponse(List<T> items, long totalHits, int page, int size, 
-                         Map<String, Map<String, Long>> aggregations, long took) {
+    public SearchResponse(List<T> items, long totalHits, int page, int size,
+                          Map<String, Map<String, Long>> aggregations, long took) {
         this.items = items;
         this.totalHits = totalHits;
         this.page = page;

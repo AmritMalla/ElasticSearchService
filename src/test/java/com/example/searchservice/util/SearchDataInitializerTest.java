@@ -1,6 +1,5 @@
 package com.example.searchservice.util;
 
-import com.example.searchservice.model.SearchableDocument;
 import com.example.searchservice.repository.SearchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,12 +8,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the SearchDataInitializer class.
+ *
+ * These tests verify the behavior of the sample data loading functionality, ensuring
+ * it correctly initializes data when needed, skips initialization when data exists,
+ * and handles exceptions gracefully.
+ */
 class SearchDataInitializerTest {
 
     @Mock
@@ -23,6 +26,12 @@ class SearchDataInitializerTest {
     @InjectMocks
     private SearchDataInitializer searchDataInitializer;
 
+    /**
+     * Sets up the test environment before each test case.
+     *
+     * Initializes Mockito annotations and configures the SearchDataInitializer with test values
+     * for data initialization flag and document count.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -30,6 +39,11 @@ class SearchDataInitializerTest {
         ReflectionTestUtils.setField(searchDataInitializer, "documentCount", 10);
     }
 
+    /**
+     * Tests the loading of sample data when no documents exist in the repository.
+     *
+     * Expected behavior: should call the repository to save a list of documents when the count is zero.
+     */
     @Test
     void testLoadSampleDataWhenNoDocumentsExist() {
         // Arrange
@@ -43,6 +57,11 @@ class SearchDataInitializerTest {
         verify(searchRepository).saveAll(anyList());
     }
 
+    /**
+     * Tests the loading of sample data when documents already exist in the repository.
+     *
+     * Expected behavior: should not attempt to save any documents if the repository already contains data.
+     */
     @Test
     void testLoadSampleDataWhenDocumentsAlreadyExist() {
         // Arrange
@@ -56,6 +75,11 @@ class SearchDataInitializerTest {
         verify(searchRepository, never()).saveAll(anyList());
     }
 
+    /**
+     * Tests the loading of sample data when an exception occurs during the process.
+     *
+     * Expected behavior: should handle the exception gracefully without throwing it and avoid saving data.
+     */
     @Test
     void testLoadSampleDataHandlesExceptions() {
         // Arrange

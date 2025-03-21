@@ -23,7 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Unit tests for SearchController using WebMvcTest and MockMvc.
+ */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(
         controllers = SearchController.class,
@@ -59,29 +61,36 @@ class SearchControllerTest {
     @MockBean
     private SearchService searchService;
 
+    /**
+     * Verifies that the health endpoint returns a valid health status message.
+     */
     @Test
     void testHealthCheck() throws Exception {
-        // Setup mock
+        // Mock the service response
         when(searchService.checkHealth()).thenReturn("OK: Connected to Elasticsearch");
 
-        // Execute and verify
+        // Perform GET request and assert expected status and content
         mockMvc.perform(get("/api/health"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("OK: Connected to Elasticsearch")));
 
+        // Verify service method was called
         verify(searchService).checkHealth();
     }
 
+    /**
+     * Validates that a properly authenticated and well-formed search request returns expected results.
+     */
     @Test
     @WithMockUser(username = "user", password = "password", roles = "USER")
     void testSearchWithValidRequest() throws Exception {
-        // Setup request
+        // Build request
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.setQuery("test");
         searchRequest.setPage(0);
         searchRequest.setSize(10);
 
-        // Setup mocks
+        // Mock service response
         List<SearchableDocument> documents = new ArrayList<>();
         SearchableDocument document = new SearchableDocument();
         document.setId("1");
@@ -94,7 +103,7 @@ class SearchControllerTest {
 
         when(searchService.search(any(SearchRequest.class))).thenReturn(response);
 
-        // Execute and verify
+        // Execute POST and validate response body
         mockMvc.perform(post("/api/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(searchRequest)))
@@ -110,37 +119,42 @@ class SearchControllerTest {
         verify(searchService).search(any(SearchRequest.class));
     }
 
+    /**
+     * Verifies that an invalid request (missing required fields) returns HTTP 400
+     * and does not invoke the service layer.
+     */
     @Test
     @WithMockUser(username = "user", password = "password", roles = "USER")
     void testSearchWithInvalidRequest() throws Exception {
-        // Setup invalid request (missing required query field)
+        // Missing required 'query' field
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.setPage(0);
         searchRequest.setSize(10);
 
-        // Execute and verify validation error
+        // Perform request and expect validation failure
         mockMvc.perform(post("/api/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(searchRequest)))
                 .andExpect(status().isBadRequest());
 
-        // Verify service was not called
+        // Verify search service is NOT called
         verify(searchService, never()).search(any(SearchRequest.class));
     }
 
+    /**
+     * Ensures that a search request made without authentication returns HTTP 401 Unauthorized.
+     */
     @Test
     void testSearchWithoutAuthentication() throws Exception {
-        // Setup request
+        // Create valid request but without authentication
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.setQuery("test");
 
-        // Execute and verify authentication required
         mockMvc.perform(post("/api/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(searchRequest)))
                 .andExpect(status().isUnauthorized());
 
-        // Verify service was not called
         verify(searchService, never()).search(any(SearchRequest.class));
     }
 }

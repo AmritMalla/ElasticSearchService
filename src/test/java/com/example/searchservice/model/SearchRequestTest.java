@@ -7,10 +7,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit tests for the SearchRequest class.
+ *
+ * These tests verify the behavior of the SearchRequest model, ensuring correct default values
+ * and proper functionality of its getter and setter methods for all fields.
+ */
 class SearchRequestTest {
 
+    /**
+     * Tests the default values of a newly created SearchRequest object.
+     *
+     * Expected behavior: should initialize with default values for page (0), size (10),
+     * and dateField ("createdDate").
+     */
     @Test
     void testSearchRequestDefaultValues() {
         SearchRequest request = new SearchRequest();
@@ -19,6 +31,12 @@ class SearchRequestTest {
         assertEquals("createdDate", request.getDateField(), "Default dateField should be createdDate");
     }
 
+    /**
+     * Tests the getter and setter methods of the SearchRequest class.
+     *
+     * Expected behavior: should correctly set and retrieve values for query, fields, pagination,
+     * sort, filters, date range, date field, and minimum score.
+     */
     @Test
     void testSearchRequestGettersAndSetters() {
         // Create a request

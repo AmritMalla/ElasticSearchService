@@ -13,19 +13,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Security configuration for the application.
- *
- * <p>Defines the security rules and authentication mechanisms, including in-memory users
- * and password encoding. Uses HTTP Basic and form-based authentication.</p>
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     /**
      * Configures the security filter chain for the application.
-     * Sets up authorization rules, CSRF settings, and authentication mechanisms.
+     * Sets up authorization rules and authentication methods.
      *
      * @param http HttpSecurity to configure
      * @return Configured SecurityFilterChain
@@ -33,54 +27,53 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Configure security rules for the API
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for stateless API calls
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API endpoints
                 .authorizeRequests()
-                .antMatchers("/api/health").permitAll() // Allow unauthenticated access to health check endpoint
-                .antMatchers("/api/search/**").authenticated() // Require authentication for search-related endpoints
-                .anyRequest().authenticated() // All other endpoints require authentication
+                .antMatchers("/api/health").permitAll() // Allow health endpoint without auth
+                .antMatchers("/api/search/**").authenticated() // Require auth for search endpoints
+                .anyRequest().authenticated() // All other requests require authentication
                 .and()
-                .httpBasic() // Enable HTTP Basic Authentication
+                .httpBasic() // Enable HTTP Basic authentication
                 .and()
-                .formLogin(); // Enable form-based login for UI access
+                .formLogin(); // Enable form login
 
-        return http.build(); // Build and return the configured security filter chain
+        return http.build();
     }
 
     /**
-     * Defines an in-memory user details service for testing/demo purposes.
-     * In production, consider integrating with a persistent user store (e.g., database, LDAP).
+     * Creates a UserDetailsService for authentication.
+     * In a production environment, this would be replaced with a database-backed service.
      *
-     * @return InMemoryUserDetailsManager with predefined users
+     * @return UserDetailsService with in-memory users
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        // Define user with role USER
+        // Create sample users for testing
         UserDetails user = User.builder()
                 .username("user")
-                .password(passwordEncoder().encode("password")) // Encode password using BCrypt
+                .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
-
-        // Define admin with roles USER and ADMIN
+        
         UserDetails admin = User.builder()
                 .username("admin")
-                .password(passwordEncoder().encode("admin")) // Encode password using BCrypt
+                .password(passwordEncoder().encode("admin"))
                 .roles("USER", "ADMIN")
                 .build();
-
-        // Create an in-memory user store with the defined users
+        
         return new InMemoryUserDetailsManager(user, admin);
     }
 
     /**
-     * Creates and configures a password encoder using BCrypt.
-     * Used to hash and validate user passwords securely.
+     * Creates a password encoder for securely storing user passwords.
+     * Uses BCrypt hashing algorithm for password security.
      *
      * @return BCryptPasswordEncoder instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Use BCrypt for strong password hashing
+        return new BCryptPasswordEncoder();
     }
 }

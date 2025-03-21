@@ -7,8 +7,20 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the ErrorResponse class.
+ *
+ * These tests verify the behavior of the ErrorResponse model, ensuring proper creation,
+ * field initialization, and management of validation errors.
+ */
 class ErrorResponseTest {
 
+    /**
+     * Tests the creation and initialization of an ErrorResponse object.
+     *
+     * Expected behavior: should correctly set status, message, path, and timestamp fields,
+     * with an initially empty errors list and a recent timestamp.
+     */
     @Test
     void testErrorResponseCreation() {
         // Create error response
@@ -32,6 +44,12 @@ class ErrorResponseTest {
         assertEquals(0, response.getErrors().size(), "Errors list should be empty");
     }
 
+    /**
+     * Tests the addition of validation errors to an ErrorResponse object.
+     *
+     * Expected behavior: should correctly add and store validation errors with their respective
+     * field names and messages in the errors list.
+     */
     @Test
     void testAddValidationError() {
         // Create error response
@@ -53,6 +71,11 @@ class ErrorResponseTest {
         assertEquals("Size must be positive", error2.getMessage(), "Error message should match");
     }
 
+    /**
+     * Tests the creation of a ValidationError inner class instance.
+     *
+     * Expected behavior: should correctly initialize the field and message properties of the ValidationError.
+     */
     @Test
     void testValidationErrorCreation() {
         String field = "query";

@@ -8,8 +8,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the SearchDataGenerator class.
+ *
+ * These tests verify the behavior of the random document generation utilities, ensuring
+ * that generated documents meet the expected criteria for count, field presence, and validity.
+ */
 class SearchDataGeneratorTest {
 
+    /**
+     * Tests the generation of a list of random documents with varying counts.
+     *
+     * Expected behavior: should return an empty list for a count of zero and a correctly sized list
+     * with valid documents for a positive count, where all required fields are non-null.
+     */
     @Test
     void testGenerateRandomDocuments() {
         // Test with zero count
@@ -33,10 +45,15 @@ class SearchDataGeneratorTest {
             assertNotNull(doc.getTags(), "Document tags should not be null");
             assertNotNull(doc.getCreatedDate(), "Document created date should not be null");
             assertNotNull(doc.getLastUpdatedDate(), "Document last updated date should not be null");
-            
         }
     }
 
+    /**
+     * Tests the creation of a single random document.
+     *
+     * Expected behavior: should return a valid SearchableDocument with non-null fields,
+     * a title containing the category, a valid tag range, and dates in the past or present.
+     */
     @Test
     void testCreateRandomDocument() {
         // Generate a single document
@@ -81,6 +98,5 @@ class SearchDataGeneratorTest {
                 "Created date should not be in the future");
         assertTrue(lastUpdatedDate.before(now) || lastUpdatedDate.equals(now),
                 "Last updated date should not be in the future");
-
     }
 }

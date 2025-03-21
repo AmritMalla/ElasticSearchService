@@ -1,7 +1,3 @@
-/**
- * Global exception handler for the application.
- * Manages the conversion of exceptions to structured API responses.
- */
 package com.example.searchservice.exception;
 
 import com.example.searchservice.model.ErrorResponse;

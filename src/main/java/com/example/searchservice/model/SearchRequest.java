@@ -1,6 +1,5 @@
 package com.example.searchservice.model;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +9,9 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a search request with query parameters and filtering options.
+ */
 @Getter
 @Setter
 public class SearchRequest {
@@ -22,50 +24,49 @@ public class SearchRequest {
     private String query;
 
     /**
-     * Fields to search within. If empty, will search in all fields.
+     * List of fields to search within. If empty or null, search will be performed across all available fields.
      */
     private List<String> fields;
 
     /**
-     * Current page for pagination.
+     * Current page number for pagination, starting from 0.
      */
     @Min(value = 0, message = "Page number must be non-negative")
-    private int page = 0;
+    private int page = 0;  // Default to first page
 
     /**
-     * Number of results per page.
+     * Number of results to return per page.
      */
     @Min(value = 1, message = "Page size must be positive")
-    private int size = 10;
+    private int size = 10;  // Default to 10 results per page
 
     /**
-     * Map of field names to sort directions ("asc" or "desc").
+     * Map specifying fields to sort by and their sort directions ("asc" or "desc").
      */
     private Map<String, String> sort;
 
     /**
-     * Map of field names to filter values for exact matches.
+     * Map of field names to filter values for exact matching.
      */
     private Map<String, Object> filters;
 
     /**
-     * Date range filter (from date in ISO format).
+     * Start date for date range filtering in ISO format (e.g., "2023-01-01").
      */
     private String dateFrom;
 
     /**
-     * Date range filter (to date in ISO format).
+     * End date for date range filtering in ISO format (e.g., "2023-12-31").
      */
     private String dateTo;
 
     /**
-     * Field to apply date range filter to.
+     * Field name to apply the date range filter to.
      */
-    private String dateField = "createdDate";
+    private String dateField = "createdDate";  // Default date field for filtering
 
     /**
-     * Minimum score for results to be included.
+     * Minimum relevance score for results to be included in the response.
      */
     private Float minScore;
-
 }
