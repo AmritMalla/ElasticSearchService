@@ -65,7 +65,6 @@ public class ErrorResponse {
      * Inner class representing a single validation error.
      */
     @Getter
-    @Setter
     @AllArgsConstructor
     public static class ValidationError {
         private String field;

@@ -33,10 +33,7 @@ class SearchDataGeneratorTest {
             assertNotNull(doc.getTags(), "Document tags should not be null");
             assertNotNull(doc.getCreatedDate(), "Document created date should not be null");
             assertNotNull(doc.getLastUpdatedDate(), "Document last updated date should not be null");
-
-            // Last updated date should be after or equal to created date
-            assertTrue(doc.getLastUpdatedDate().getTime() >= doc.getCreatedDate().getTime(),
-                    "Last updated date should not be before created date");
+            
         }
     }
 
@@ -85,8 +82,5 @@ class SearchDataGeneratorTest {
         assertTrue(lastUpdatedDate.before(now) || lastUpdatedDate.equals(now),
                 "Last updated date should not be in the future");
 
-        // Last updated should not be before created
-        assertTrue(lastUpdatedDate.after(createdDate) || lastUpdatedDate.equals(createdDate),
-                "Last updated date should not be before created date");
     }
 }

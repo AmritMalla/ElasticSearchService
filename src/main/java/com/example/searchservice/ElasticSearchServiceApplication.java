@@ -1,7 +1,3 @@
-/**
- * Main Application class for Elasticsearch Search Microservice.
- * Serves as the entry point for the Spring Boot application.
- */
 package com.example.searchservice;
 
 import org.springframework.boot.SpringApplication;
@@ -19,5 +15,6 @@ public class ElasticSearchServiceApplication {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(ElasticSearchServiceApplication.class, args);
+
 	}
 }

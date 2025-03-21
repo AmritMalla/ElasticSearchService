@@ -19,6 +19,8 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -56,11 +58,15 @@ public class SearchServiceImpl implements SearchService {
         long startTime = System.currentTimeMillis();
 
         try {
-            // Create a simple criteria query
-            Criteria criteria = new Criteria("title").contains(searchRequest.getQuery())
-                    .or("content").contains(searchRequest.getQuery());
+            // Create separate criteria for each field and combine them
+            Criteria titleCriteria = new Criteria("title").matches(searchRequest.getQuery());
+            Criteria contentCriteria = new Criteria("content").matches(searchRequest.getQuery());
 
-            CriteriaQuery query = new CriteriaQuery(criteria);
+            // Combine with OR
+            Criteria combinedCriteria = titleCriteria.or(contentCriteria);
+
+            // Create and configure the query
+            CriteriaQuery query = new CriteriaQuery(combinedCriteria);
             query.setPageable(PageRequest.of(searchRequest.getPage(), searchRequest.getSize()));
 
             // Execute the search
@@ -113,5 +119,4 @@ public class SearchServiceImpl implements SearchService {
             return "ERROR: " + e.getMessage();
         }
     }
-
 }
