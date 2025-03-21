@@ -32,8 +32,9 @@ dependencies {
 	// Elasticsearch dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'co.elastic.clients:elasticsearch-java:8.11.1'
-	implementation 'org.json:json:20231013'
-
+	implementation ('org.json:json:20231013') {
+		exclude group: 'com.vaadin.external.google', module: 'android-json'
+	}
 
 	// Lombok for boilerplate reduction
 	compileOnly 'org.projectlombok:lombok'
